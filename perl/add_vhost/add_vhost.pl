@@ -56,4 +56,6 @@ unless (-d "$WWW_DIR/$domain_name") {
     mkdir "$WWW_DIR/$domain_name";
     system "chown raziel:raziel $WWW_DIR/$domain_name";
     #chown $EFFECTIVE_USER_ID, $EFFECTIVE_GROUP_ID, "$WWW_DIR/$domain_name";
+} else {
+    warn "$WWW_DIR/$domain_name is already exists!";
 }

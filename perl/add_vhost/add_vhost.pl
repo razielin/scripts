@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -s
 use strict;
 use warnings FATAL => 'all';
 use English;
@@ -50,12 +50,26 @@ say 'Adding site to hosts...';
 append_file($HOSTS_FILE, "127.0.0.1  $domain_name$SITE_PREFIX\n");
 
 say 'Reloading apache...';
-system 'systemctl reload apache2';
+system 'service apache2 reload';
 
-unless (-d "$WWW_DIR/$domain_name") {
-    mkdir "$WWW_DIR/$domain_name";
-    system "chown raziel:raziel $WWW_DIR/$domain_name";
-    #chown $EFFECTIVE_USER_ID, $EFFECTIVE_GROUP_ID, "$WWW_DIR/$domain_name";
+my $TARGET_DIR = "$WWW_DIR/$domain_name";
+
+# -s option - create symlink to the existing directory
+if ($s) {
+    if (-d $s) {
+        die "-d: symlink to non-existing directory\n";
+    }
+    if (-d $TARGET_DIR) {
+        die "-s: directory $TARGET_DIR is already exists\n";
+    }
+    symlink($s, $TARGET_DIR);
+    exit;
+}
+
+unless (-d $TARGET_DIR) {
+    mkdir $TARGET_DIR;
+    system "chown raziel:raziel $TARGET_DIR";
+    #chown $EFFECTIVE_USER_ID, $EFFECTIVE_GROUP_ID, $TARGET_DIR;
 } else {
-    warn "$WWW_DIR/$domain_name is already exists!";
+    warn "$TARGET_DIR is already exists!";
 }

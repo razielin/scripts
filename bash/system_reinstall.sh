@@ -19,6 +19,14 @@ installSkype() {
     rm skypeforlinux-64.deb -f
 }
 
+installTimeDoctor() {
+    aptInstall libssl1.0-dev
+    aptInstall libappindicator1
+    wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
+    ./timedoctor-setup-1.5.0.20-linux-x86_64.run
+    rm timedoctor-setup-1.5.0.20-linux-x86_64.run
+}
+
 checkRootPerm;
 aptInstall chromium-browser
 aptInstall fish
@@ -26,5 +34,4 @@ aptInstall guake
 aptInstall git
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
-
-
+installTimeDoctor

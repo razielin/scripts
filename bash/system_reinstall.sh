@@ -27,6 +27,13 @@ installTimeDoctor() {
     rm timedoctor-setup-1.5.0.20-linux-x86_64.run
 }
 
+installVips() {
+    aptInstall php-dev
+    aptInstall libvips-dev
+    pecl install vips
+    composer require jcupitt/vips
+}
+
 checkRootPerm;
 aptInstall chromium-browser
 aptInstall fish

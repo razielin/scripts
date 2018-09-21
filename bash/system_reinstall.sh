@@ -8,6 +8,13 @@ checkRootPerm() {
     fi
 }
 
+setIniVar() {
+    local var=$1
+    local value=$2
+    local file=$3
+    sed -Ei "s/;?\s*($var)\s*=\s*(.*)/\1 = $value/mg" ${file}
+}
+
 aptInstall() {
     apt install $1 -y
 }
@@ -27,7 +34,7 @@ installTimeDoctor() {
     rm timedoctor-setup-1.5.0.20-linux-x86_64.run
 }
 
-checkRootPerm;
+checkRootPerm
 aptInstall chromium-browser
 aptInstall fish
 aptInstall guake

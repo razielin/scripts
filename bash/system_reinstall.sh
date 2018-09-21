@@ -8,6 +8,14 @@ checkRootPerm() {
     fi
 }
 
+dieOnError() {
+    set -e
+}
+
+printCommandBeforeExecution() {
+    set -v
+}
+
 setIniVar() {
     local var=$1
     local value=$2

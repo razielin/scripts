@@ -20,7 +20,7 @@ setIniVar() {
     local var=$1
     local value=$2
     local file=$3
-    sed -Ei "s/;?\s*($var)\s*=\s*(.*)/\1 = $value/mg" ${file}
+    sed -Ei "s/;?\s*($var)\s*=\s*(.*)/\1 = $value/g" ${file}
 }
 
 aptInstall() {

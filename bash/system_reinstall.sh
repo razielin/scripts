@@ -55,6 +55,8 @@ aptInstall chromium-browser
 aptInstall fish
 aptInstall yakuake
 aptInstall git
+aptInstall mpv
+aptInstall doublecmd-qt
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
 installTimeDoctor

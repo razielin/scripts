@@ -43,6 +43,10 @@ installTimeDoctor() {
     rm timedoctor-setup-1.5.0.20-linux-x86_64.run
 }
 
+installPHPStorm() {
+    snap install phpstorm --channel=2018.3/edge --classic
+}
+
 checkRootPerm
 aptInstall chromium-browser
 aptInstall fish

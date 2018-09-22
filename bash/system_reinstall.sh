@@ -53,7 +53,7 @@ dieOnError
 
 aptInstall chromium-browser
 aptInstall fish
-aptInstall guake
+aptInstall yakuake
 aptInstall git
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype

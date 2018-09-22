@@ -48,6 +48,9 @@ installPHPStorm() {
 }
 
 checkRootPerm
+printCommandBeforeExecution
+dieOnError
+
 aptInstall chromium-browser
 aptInstall fish
 aptInstall guake

@@ -29,7 +29,7 @@ aptInstall() {
 
 installSkype() {
     wget https://repo.skype.com/latest/skypeforlinux-64.deb
-    dpkg -i skypeforlinux-64.deb
+    dpkg -i skypeforlinux-64.deb || true
     apt install -f
     rm skypeforlinux-64.deb -f
 }
@@ -38,6 +38,7 @@ installTimeDoctor() {
     aptInstall libssl1.0-dev
     aptInstall libappindicator1
     wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
+    chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
     ./timedoctor-setup-1.5.0.20-linux-x86_64.run
     rm timedoctor-setup-1.5.0.20-linux-x86_64.run
 }

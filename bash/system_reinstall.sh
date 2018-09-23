@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 REAL_USER=`logname`
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
 
 checkRootPerm() {
     if [[ $EUID -ne 0 ]]; then
@@ -24,7 +25,7 @@ setIniVar() {
 }
 
 aptInstall() {
-    apt install $1 -y
+    apt install ${@} -y
 }
 
 installSkype() {
@@ -47,6 +48,36 @@ installPHPStorm() {
     snap install phpstorm --channel=2018.3/edge --classic
 }
 
+makeBackupIfNotExists() {
+    local file=$1
+    local SUFFIX="default"
+    # if backup file is not exists
+    if [ ! -e ${file}.${SUFFIX} ]; then
+        cp ${file} ${file}.${SUFFIX}
+    fi
+}
+
+installPhpAndApache() {
+    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip
+    makeBackupIfNotExists /etc/apache2/apache2.conf
+    cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
+}
+
+configurePHPIni() {
+    aptInstall crudini
+    # update both apache and cli php ini configs
+    for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do
+        crudini --set ${php_ini} PHP error_reporting E_ALL
+        crudini --set ${php_ini} PHP short_open_tag On
+        crudini --set ${php_ini} PHP html_errors Off
+        crudini --set ${php_ini} PHP post_max_size 128M
+        crudini --set ${php_ini} PHP upload_max_filesize 128M
+        crudini --set ${php_ini} Assertion zend.assertions 1
+        crudini --set ${php_ini} Assertion display_errors On
+        crudini --set ${php_ini} Assertion display_startup_errors On
+    done
+}
+
 checkRootPerm
 printCommandBeforeExecution
 dieOnError
@@ -57,6 +88,7 @@ aptInstall yakuake
 aptInstall git
 aptInstall mpv
 aptInstall doublecmd-qt
+aptInstall vim
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
 installTimeDoctor

@@ -31,7 +31,7 @@ aptInstall() {
 installSkype() {
     wget https://repo.skype.com/latest/skypeforlinux-64.deb
     dpkg -i skypeforlinux-64.deb || true
-    apt install -f
+    apt install -f -y
     rm skypeforlinux-64.deb -f
 }
 
@@ -67,6 +67,7 @@ configurePHPIni() {
     aptInstall crudini
     # update both apache and cli php ini configs
     for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do
+        makeBackupIfNotExists ${php_ini}
         crudini --set ${php_ini} PHP error_reporting E_ALL
         crudini --set ${php_ini} PHP short_open_tag On
         crudini --set ${php_ini} PHP html_errors Off

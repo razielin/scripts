@@ -17,6 +17,10 @@ printCommandBeforeExecution() {
     set -v
 }
 
+isCommandExists() {
+    command -v ${1}
+}
+
 setIniVar() {
     local var=$1
     local value=$2
@@ -29,19 +33,27 @@ aptInstall() {
 }
 
 installSkype() {
-    wget https://repo.skype.com/latest/skypeforlinux-64.deb
-    dpkg -i skypeforlinux-64.deb || true
-    apt install -f -y
-    rm skypeforlinux-64.deb -f
+    if ! isCommandExists skypeforlinux 2>/dev/null; then
+        wget https://repo.skype.com/latest/skypeforlinux-64.deb
+        dpkg -i skypeforlinux-64.deb || true
+        apt install -f -y
+        rm skypeforlinux-64.deb -f
+    else 
+        echo "Skype already installed. Continue..."
+    fi
 }
 
 installTimeDoctor() {
     aptInstall libssl1.0-dev
     aptInstall libappindicator1
-    wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
-    chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
-    ./timedoctor-setup-1.5.0.20-linux-x86_64.run
-    rm timedoctor-setup-1.5.0.20-linux-x86_64.run
+    if ! isCommandExists skypeforlinux 2>/dev/null; then
+        wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
+        chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
+        ./timedoctor-setup-1.5.0.20-linux-x86_64.run
+        rm timedoctor-setup-1.5.0.20-linux-x86_64.run
+    else
+        echo "Timedoctor already installed. Continue..."
+    fi
 }
 
 installPHPStorm() {

@@ -85,9 +85,9 @@ configurePHPIni() {
         crudini --set ${php_ini} PHP html_errors Off
         crudini --set ${php_ini} PHP post_max_size 128M
         crudini --set ${php_ini} PHP upload_max_filesize 128M
+        crudini --set ${php_ini} PHP display_errors On
+        crudini --set ${php_ini} PHP display_startup_errors On
         crudini --set ${php_ini} Assertion zend.assertions 1
-        crudini --set ${php_ini} Assertion display_errors On
-        crudini --set ${php_ini} Assertion display_startup_errors On
     done
 }
 

@@ -18,7 +18,7 @@ printCommandBeforeExecution() {
 }
 
 isCommandExists() {
-    command -v ${1}
+    command -v ${1} > /dev/null
 }
 
 setIniVar() {
@@ -33,7 +33,7 @@ aptInstall() {
 }
 
 installSkype() {
-    if ! isCommandExists skypeforlinux 2>/dev/null; then
+    if ! isCommandExists skypeforlinux; then
         wget https://repo.skype.com/latest/skypeforlinux-64.deb
         dpkg -i skypeforlinux-64.deb || true
         apt install -f -y
@@ -46,7 +46,7 @@ installSkype() {
 installTimeDoctor() {
     aptInstall libssl1.0-dev
     aptInstall libappindicator1
-    if ! isCommandExists skypeforlinux 2>/dev/null; then
+    if ! isCommandExists skypeforlinux; then
         wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
         chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
         ./timedoctor-setup-1.5.0.20-linux-x86_64.run

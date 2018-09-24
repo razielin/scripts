@@ -95,6 +95,10 @@ installVips() {
     aptInstall php-dev
     aptInstall libvips-dev
     pecl install vips
+    for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do
+        makeBackupIfNotExists ${php_ini}
+        crudini --set ${php_ini} PHP extension vips.so
+    done
 }
 
 checkRootPerm

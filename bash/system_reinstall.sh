@@ -70,7 +70,7 @@ makeBackupIfNotExists() {
 }
 
 installPhpAndApache() {
-    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip
+    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug
     makeBackupIfNotExists /etc/apache2/apache2.conf
     cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
     a2dissite 000-default > /dev/null
@@ -89,6 +89,7 @@ configurePHPIni() {
         crudini --set ${php_ini} PHP display_errors On
         crudini --set ${php_ini} PHP display_startup_errors On
         crudini --set ${php_ini} Assertion zend.assertions 1
+        crudini --set ${php_ini} PHP xdebug.remote_enable 1
     done
 }
 

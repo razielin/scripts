@@ -109,7 +109,15 @@ installVips() {
     else
         echo "vips already installed. Continue..."
     fi
+}
 
+installVirtHostManageScript() {
+    # https://github.com/RoverWire/virtualhost
+    local INSTALL_PATH='/usr/local/bin'
+    wget -O ${INSTALL_PATH}/virtualhost https://raw.githubusercontent.com/RoverWire/virtualhost/master/virtualhost.sh
+    chmod +x ${INSTALL_PATH}/virtualhost
+    wget -O ${INSTALL_PATH}/virtualhost-nginx https://raw.githubusercontent.com/RoverWire/virtualhost/master/virtualhost-nginx.sh
+    chmod +x ${INSTALL_PATH}/virtualhost-nginx
 }
 
 checkRootPerm
@@ -132,5 +140,6 @@ installTimeDoctor
 installPhpAndApache
 configurePHPIni
 installVips
+installVirtHostManageScript
 
 service apache2 restart

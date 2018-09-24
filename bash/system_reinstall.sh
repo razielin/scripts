@@ -123,6 +123,13 @@ aptInstall git
 aptInstall mpv
 aptInstall doublecmd-qt
 aptInstall vim
+aptInstall xclip
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
 installTimeDoctor
+
+installPhpAndApache
+configurePHPIni
+installVips
+
+service apache2 restart

@@ -73,6 +73,7 @@ installPhpAndApache() {
     aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip
     makeBackupIfNotExists /etc/apache2/apache2.conf
     cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
+    a2dissite 000-default > /dev/null
 }
 
 configurePHPIni() {

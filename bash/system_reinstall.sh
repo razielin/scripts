@@ -78,16 +78,15 @@ configurePHPIni() {
     done
 }
 
-checkRootPerm
-printCommandBeforeExecution
-dieOnError
-
 installVips() {
     aptInstall php-dev
     aptInstall libvips-dev
     pecl install vips
-    composer require jcupitt/vips
 }
+
+checkRootPerm
+printCommandBeforeExecution
+dieOnError
 
 checkRootPerm;
 aptInstall chromium-browser

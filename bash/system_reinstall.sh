@@ -147,6 +147,8 @@ aptInstall mpv
 aptInstall doublecmd-qt
 aptInstall vim
 aptInstall xclip
+aptInstall keepassxc
+
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
 installTimeDoctor

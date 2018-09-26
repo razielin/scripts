@@ -17,7 +17,7 @@ printCommandBeforeExecution() {
     set -v
 }
 
-isCommandExists() {
+commandExists() {
     command -v ${1} > /dev/null
 }
 
@@ -48,7 +48,7 @@ debInstall() {
 }
 
 installSkype() {
-    if ! isCommandExists skypeforlinux; then
+    if ! commandExists skypeforlinux; then
         debInstallByUrl "https://repo.skype.com/latest/skypeforlinux-64.deb"
     else 
         echo "Skype already installed. Continue..."
@@ -58,7 +58,7 @@ installSkype() {
 installTimeDoctor() {
     aptInstall libssl1.0-dev
     aptInstall libappindicator1
-    if ! isCommandExists skypeforlinux; then
+    if ! commandExists skypeforlinux; then
         wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
         chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
         ./timedoctor-setup-1.5.0.20-linux-x86_64.run
@@ -147,7 +147,7 @@ installMariadb() {
     DB_ADMIN_USER='raziel'
     DB_ADMIN_PASS='556691'
 
-    if ! isCommandExists mariadb; then
+    if ! commandExists mariadb; then
         aptInstall mariadb-server mariadb-client
         mysql_secure_installation
         echo "
@@ -167,7 +167,7 @@ installPhpMyAdmin() {
 }
 
 installDocker() {
-    if ! isCommandExists docker; then
+    if ! commandExists docker; then
         aptInstall apt-transport-https ca-certificates curl software-properties-common
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
@@ -180,7 +180,7 @@ installDocker() {
 }
 
 installDropbox() {
-    if ! isCommandExists dropbox; then
+    if ! commandExists dropbox; then
         debInstallByUrl "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2015.10.28_amd64.deb"
     else
         echo "dropbox already installed. Continue..."

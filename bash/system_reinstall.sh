@@ -2,6 +2,39 @@
 REAL_USER=`logname`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
 
+main() {
+    checkRootPerm
+    printCommandBeforeExecution
+    dieOnError
+
+    aptInstall chromium-browser
+    aptInstall fish
+    aptInstall yakuake
+    aptInstall git
+    aptInstall mpv
+    aptInstall doublecmd-qt
+    aptInstall vim curl
+    aptInstall xclip
+    aptInstall keepassxc
+
+    sudo usermod -s /usr/bin/fish ${REAL_USER}
+
+    installSkype
+    installTimeDoctor
+    installDropbox
+
+    installPhpAndApache
+    installVips
+    installVirtHostManageScript
+    installMariadb
+    installPhpMyAdmin
+
+    configurePHPIni
+
+    service apache2 restart
+    service mariadb restart
+}
+
 checkRootPerm() {
     if [[ $EUID -ne 0 ]]; then
        echo "This script must be run as root" 1>&2
@@ -187,33 +220,4 @@ installDropbox() {
     fi
 }
 
-checkRootPerm
-printCommandBeforeExecution
-dieOnError
-
-aptInstall chromium-browser
-aptInstall fish
-aptInstall yakuake
-aptInstall git
-aptInstall mpv
-aptInstall doublecmd-qt
-aptInstall vim curl
-aptInstall xclip
-aptInstall keepassxc
-
-sudo usermod -s /usr/bin/fish ${REAL_USER}
-
-installSkype
-installTimeDoctor
-installDropbox
-
-installPhpAndApache
-installVips
-installVirtHostManageScript
-installMariadb
-installPhpMyAdmin
-
-configurePHPIni
-
-service apache2 restart
-service mariadb restart
+main

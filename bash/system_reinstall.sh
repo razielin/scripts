@@ -32,6 +32,21 @@ aptInstall() {
     apt install ${@} -y
 }
 
+debInstallByUrl() {
+    url="$1"
+    filename=`basename "$1"`
+    wget --content-disposition ${1}
+    dpkg -i ${filename} || true # if there are unresolved dependencies - force successful status code
+    apt install -f -y # fix unresolved dependencies if any
+    rm ${filename} -f
+}
+
+debInstall() {
+    file=$1
+    dpkg -i ${file} || true
+    apt install -f -y
+}
+
 installSkype() {
     if ! isCommandExists skypeforlinux; then
         wget https://repo.skype.com/latest/skypeforlinux-64.deb
@@ -138,11 +153,18 @@ installDocker() {
     fi
 }
 
+installDropbox() {
+    if ! isCommandExists dropbox; then
+        debInstallByUrl "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2015.10.28_amd64.deb"
+    else
+        echo "dropbox already installed. Continue..."
+    fi
+}
+
 checkRootPerm
 printCommandBeforeExecution
 dieOnError
 
-checkRootPerm;
 aptInstall chromium-browser
 aptInstall fish
 aptInstall yakuake
@@ -156,6 +178,7 @@ aptInstall keepassxc
 sudo usermod -s /usr/bin/fish ${REAL_USER}
 installSkype
 installTimeDoctor
+installDropbox
 
 installPhpAndApache
 configurePHPIni

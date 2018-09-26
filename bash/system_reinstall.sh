@@ -90,18 +90,23 @@ installPhpAndApache() {
 
 configurePHPIni() {
     aptInstall crudini
-    # update both apache and cli php ini configs
-    for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do
-        makeBackupIfNotExists ${php_ini}
-        crudini --set ${php_ini} PHP error_reporting E_ALL
-        crudini --set ${php_ini} PHP short_open_tag On
-        crudini --set ${php_ini} PHP html_errors Off
-        crudini --set ${php_ini} PHP post_max_size 128M
-        crudini --set ${php_ini} PHP upload_max_filesize 128M
-        crudini --set ${php_ini} PHP display_errors On
-        crudini --set ${php_ini} PHP display_startup_errors On
-        crudini --set ${php_ini} Assertion zend.assertions 1
-        crudini --set ${php_ini} PHP xdebug.remote_enable 1
+    # update all installed php.ini files
+    PHP_VERSION=`php -r "echo PHP_VERSION;" | cut -c 1,2,3` # php version, like 5.6
+    for php_type in apache2 cli fpm; do
+        local php_ini="/etc/php/$PHP_VERSION/$php_type/php.ini"
+        if [ -e ${php_ini} ]; then
+            echo "Updating php.ini: $php_ini"
+            makeBackupIfNotExists ${php_ini}
+            crudini --set ${php_ini} PHP error_reporting E_ALL
+            crudini --set ${php_ini} PHP short_open_tag On
+            crudini --set ${php_ini} PHP html_errors Off
+            crudini --set ${php_ini} PHP post_max_size 128M
+            crudini --set ${php_ini} PHP upload_max_filesize 128M
+            crudini --set ${php_ini} PHP display_errors On
+            crudini --set ${php_ini} PHP display_startup_errors On
+            crudini --set ${php_ini} Assertion zend.assertions 1
+            crudini --set ${php_ini} PHP xdebug.remote_enable 1
+        fi
     done
 }
 
@@ -192,15 +197,18 @@ aptInstall xclip
 aptInstall keepassxc
 
 sudo usermod -s /usr/bin/fish ${REAL_USER}
+
 installSkype
 installTimeDoctor
 installDropbox
 
 installPhpAndApache
-configurePHPIni
 installVips
 installVirtHostManageScript
 installMariadb
 installPhpMyAdmin
 
+configurePHPIni
+
 service apache2 restart
+service mariadb restart

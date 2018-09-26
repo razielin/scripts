@@ -150,6 +150,12 @@ installMariadb() {
     " | mysql -u root
 }
 
+installPhpMyAdmin() {
+    aptInstall phpmyadmin php-mbstring php-gettext
+    phpenmod mbstring
+    service apache2 restart
+}
+
 installDocker() {
     if ! isCommandExists docker; then
         aptInstall apt-transport-https ca-certificates curl software-properties-common
@@ -195,5 +201,6 @@ configurePHPIni
 installVips
 installVirtHostManageScript
 installMariadb
+installPhpMyAdmin
 
 service apache2 restart

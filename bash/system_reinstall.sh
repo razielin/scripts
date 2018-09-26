@@ -116,11 +116,11 @@ peclExtensionInstalled() {
 }
 
 installVips() {
-    # php-dev conflicts with Timedoctor, because Timedoctor requires libssl1.0-dev but php-dev requires libssl-dev
-    # so during installation of php-dev - libssl1.0-dev will be removed and timedoctor will not sync
-    aptInstall php-dev # required by pecl install vips
-    aptInstall libvips-dev
     if ! peclExtensionInstalled vips; then
+        # php-dev conflicts with Timedoctor, because Timedoctor requires libssl1.0-dev but php-dev requires libssl-dev
+        # so during installation of php-dev - libssl1.0-dev will be removed and timedoctor will not sync
+        aptInstall php-dev # required by pecl install vips
+        aptInstall libvips-dev
         # confirm prompt 'enable vips [yes] :'
         printf "\n" | pecl install vips
         for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do

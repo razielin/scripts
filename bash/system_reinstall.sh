@@ -49,10 +49,7 @@ debInstall() {
 
 installSkype() {
     if ! isCommandExists skypeforlinux; then
-        wget https://repo.skype.com/latest/skypeforlinux-64.deb
-        dpkg -i skypeforlinux-64.deb || true
-        apt install -f -y
-        rm skypeforlinux-64.deb -f
+        debInstallByUrl "https://repo.skype.com/latest/skypeforlinux-64.deb"
     else 
         echo "Skype already installed. Continue..."
     fi

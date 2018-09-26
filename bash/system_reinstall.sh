@@ -137,6 +137,19 @@ installVirtHostManageScript() {
     chmod +x ${INSTALL_PATH}/virtualhost-nginx
 }
 
+installMariadb() {
+    DB_ADMIN_USER='raziel'
+    DB_ADMIN_PASS='556691'
+
+    aptInstall mariadb-server mariadb-client
+    mysql_secure_installation
+    echo "
+    CREATE USER '$DB_ADMIN_USER'@'localhost' IDENTIFIED BY '$DB_ADMIN_PASS';
+    GRANT ALL PRIVILEGES ON * . * TO '$DB_ADMIN_USER'@'localhost';
+    FLUSH PRIVILEGES;
+    " | mysql -u root
+}
+
 installDocker() {
     if ! isCommandExists docker; then
         aptInstall apt-transport-https ca-certificates curl software-properties-common
@@ -168,7 +181,7 @@ aptInstall yakuake
 aptInstall git
 aptInstall mpv
 aptInstall doublecmd-qt
-aptInstall vim
+aptInstall vim curl
 aptInstall xclip
 aptInstall keepassxc
 
@@ -181,5 +194,6 @@ installPhpAndApache
 configurePHPIni
 installVips
 installVirtHostManageScript
+installMariadb
 
 service apache2 restart

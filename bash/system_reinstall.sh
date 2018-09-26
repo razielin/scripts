@@ -6,7 +6,6 @@ main() {
     printFunctionNameBeforeExecution
 
     checkRootPerm
-    printCommandBeforeExecution
     dieOnError
 
     aptInstall chromium-browser
@@ -61,10 +60,6 @@ checkRootPerm() {
 
 dieOnError() {
     set -e
-}
-
-printCommandBeforeExecution() {
-    set -v
 }
 
 commandExists() {

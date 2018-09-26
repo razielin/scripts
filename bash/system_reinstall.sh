@@ -3,6 +3,8 @@ REAL_USER=`logname`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
 
 main() {
+    printFunctionNameBeforeExecution
+
     checkRootPerm
     printCommandBeforeExecution
     dieOnError
@@ -35,6 +37,21 @@ main() {
     service mariadb restart
 }
 
+printFunctionNameBeforeExecution() {
+    trap 'echoCommand' DEBUG > /dev/null
+}
+
+echoCommand() {
+    local YELLOW='\033[0;33m'
+    local NC='\033[0m' # No Color
+    echo -e "$YELLOW>>> $BASH_COMMAND$NC"
+}
+
+xtraceCommandPrintBeforeExecution() {
+    export PS4='\[\e[36m\] + \[\e[m\]'
+    set -o xtrace
+}
+
 checkRootPerm() {
     if [[ $EUID -ne 0 ]]; then
        echo "This script must be run as root" 1>&2
@@ -62,7 +79,7 @@ setIniVar() {
 }
 
 aptInstall() {
-    apt install ${@} -y
+    apt install ${@}
 }
 
 debInstallByUrl() {

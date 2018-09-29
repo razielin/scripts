@@ -32,6 +32,9 @@ main() {
 
     configurePHPIni
 
+    installDocker
+    installDockerCompose
+
     service apache2 restart
     service mariadb restart
 }
@@ -74,7 +77,7 @@ setIniVar() {
 }
 
 aptInstall() {
-    apt install ${@}
+    apt-get install -y ${@}
 }
 
 debInstallByUrl() {
@@ -217,10 +220,23 @@ installDocker() {
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
         apt update
-        apt install docker-ce
+        aptInstall docker-ce
         usermod -aG docker ${REAL_USER}
     else
         echo "docker already installed. Continue..."
+    fi
+}
+
+installDockerCompose() {
+    if ! commandExists docker-compose; then
+        # find the latest available docker-compose version number (e.g. 1.12.1)
+        latest_version=$(curl https://api.github.com/repos/docker/compose/releases/latest | grep '"tag_name"' | grep -Po '\d+\.\d+\.\d+')
+        output='/usr/local/bin/docker-compose'
+        curl -L https://github.com/docker/compose/releases/download/${latest_version}/docker-compose-$(uname -s)-$(uname -m) -o ${output}
+        chmod +x ${output}
+        echo $(docker-compose --version)
+    else
+        echo "docker-compose already installed. Continue..."
     fi
 }
 

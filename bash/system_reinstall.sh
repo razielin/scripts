@@ -250,7 +250,7 @@ installDropbox() {
 
 stowDotFilesFromDropbox() {
     aptInstall stow
-    stow -t ~ -d ~/Dropbox/dotfiles --verbose=3 bash doublecmd fish ssh tmux yakuake
+    stow -t ~ -d ~/Dropbox/dotfiles --verbose=3 bash doublecmd fish tmux yakuake
 }
 
 main

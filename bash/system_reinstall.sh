@@ -253,4 +253,9 @@ stowDotFilesFromDropbox() {
     stow -t ~ -d ~/Dropbox/dotfiles --verbose=3 bash doublecmd fish tmux yakuake
 }
 
+installFisher() {
+    curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
+    fisher add barnybug/docker-fish-completion
+}
+
 main

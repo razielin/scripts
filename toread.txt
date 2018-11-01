@@ -1,0 +1,9 @@
+Чистая архитектура
+Эффективная работа с унаследованным кодом
+Предметно-ориентированное проектирование (DDD). Структуризация сложных программных систем Эрик Эванс
+Implementing Domain-Driven Design https://www.amazon.com/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577#customerReviews
+Принципы, паттерны и методики гибкой разработки на языке C#  https://www.ozon.ru/context/detail/id/5800704/
+Программист прагматик
+Мифический человекомесяц
+
+Test-Driven Development: A Practical Guide ???

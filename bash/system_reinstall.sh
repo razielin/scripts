@@ -24,6 +24,9 @@ main() {
     installTimeDoctor
     installDropbox
 
+    installEarlyOom
+    installLibreOffice
+
     installPhpAndApache
     installVips
     installVirtHostManageScript
@@ -31,6 +34,7 @@ main() {
     installPhpMyAdmin
 
     configurePHPIni
+    addCronJobsOnStartup
 
     installDocker
     installDockerCompose
@@ -124,7 +128,7 @@ makeBackupIfNotExists() {
     local file=$1
     local SUFFIX="default"
     # if backup file is not exists
-    if [ ! -e ${file}.${SUFFIX} ]; then
+    if [[ ! -e ${file}.${SUFFIX} ]]; then
         cp ${file} ${file}.${SUFFIX}
     fi
 }
@@ -143,7 +147,7 @@ configurePHPIni() {
     PHP_VERSION=`php -r "echo PHP_VERSION;" | cut -c 1,2,3` # php version, like 5.6
     for php_type in apache2 cli fpm; do
         local php_ini="/etc/php/$PHP_VERSION/$php_type/php.ini"
-        if [ -e ${php_ini} ]; then
+        if [[ -e ${php_ini} ]]; then
             echo "Updating php.ini: $php_ini"
             makeBackupIfNotExists ${php_ini}
             crudini --set ${php_ini} PHP error_reporting E_ALL
@@ -247,6 +251,19 @@ installDropbox() {
     else
         echo "dropbox already installed. Continue..."
     fi
+}
+
+addCronJobsOnStartup() {
+    # fix timedoctor bug with unlimited growing log file which causes slow timedoctor start time
+    echo "@reboot bash -c 'rm /home/*/.local/share/TimeDoctorLLC/TimeDoctorPro/log.db'" | crontab -
+}
+
+installEarlyOom() {
+    aptInstall earlyoom
+}
+
+installLibreOffice() {
+    aptInstall libreoffice libreoffice-kde libreoffice-l10n-ru libreoffice-help-ru libreoffice-pdfimport hunspell-ru libreoffice-grammarcheck-ru
 }
 
 stowDotFilesFromDropbox() {

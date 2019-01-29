@@ -258,4 +258,12 @@ installFisher() {
     fisher add barnybug/docker-fish-completion
 }
 
+installWine() {
+    dpkg --add-architecture i386
+    wget -nc https://dl.winehq.org/wine-builds/winehq.key
+    apt-key add winehq.key
+    apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
+    apt install --install-recommends winehq-staging
+}
+
 main

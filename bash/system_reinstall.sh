@@ -134,6 +134,7 @@ installPhpAndApache() {
     makeBackupIfNotExists /etc/apache2/apache2.conf
     cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
     a2dissite 000-default > /dev/null
+    a2enmod rewrite
 }
 
 configurePHPIni() {

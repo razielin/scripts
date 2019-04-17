@@ -4,7 +4,7 @@ main() {
     while [[ 1 ]]; do
         repeatCommand 2 clickToBottomPanel
         altTab
-        sleep 3
+        sleep 4
         if (( `randomIntBetween 0 10` > 3 )); then
             prevTab
         else

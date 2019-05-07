@@ -2,6 +2,7 @@
 REAL_USER=`logname`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
 
+# https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 main() {
     printFunctionNameBeforeExecution
 

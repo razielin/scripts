@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 REAL_USER=`logname`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
+TEMP_DIR=`mktemp --directory`
 
 # https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 main() {
     printFunctionNameBeforeExecution
+    cd ${TEMP_DIR}
+    signalHandling
 
     checkRootPerm
     dieOnError
@@ -18,9 +21,14 @@ main() {
     aptInstall vim curl
     aptInstall xclip
     aptInstall keepassxc
+    aptInstall composer
+    aptInstall nodejs
+    aptInstall qalculate
+    aptInstall crudini
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
+    installFisher
     installSkype
     installTimeDoctor
     installDropbox
@@ -42,6 +50,19 @@ main() {
 
     service apache2 restart
     service mariadb restart
+
+    setDefaultBrowser
+    cleaningOnExit
+}
+
+signalHandling() {
+    trap 'cleaningOnExit' INT
+}
+
+cleaningOnExit() {
+    rm -fr ${TEMP_DIR}
+    rmdir ${TEMP_DIR}
+    cd ${OLDPWD}
 }
 
 printFunctionNameBeforeExecution() {
@@ -87,8 +108,8 @@ aptInstall() {
 
 debInstallByUrl() {
     url="$1"
-    filename=`basename "$1"`
-    wget --content-disposition ${1}
+    filename=`basename "$url"`
+    wget --content-disposition ${url}
     dpkg -i ${filename} || true # if there are unresolved dependencies - force successful status code
     apt install -f -y # fix unresolved dependencies if any
     rm ${filename} -f
@@ -98,6 +119,15 @@ debInstall() {
     file=$1
     dpkg -i ${file} || true
     apt install -f -y
+}
+
+installFromInstallerByUrl() {
+    url=$1
+    filename=`basename "$url"`
+    wget --content-disposition ${url}
+    chmod u+x ${filename}
+    ./${filename}
+    rm ${filename}
 }
 
 installSkype() {
@@ -112,10 +142,7 @@ installTimeDoctor() {
     aptInstall libssl1.0-dev
     aptInstall libappindicator1
     if ! commandExists skypeforlinux; then
-        wget https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run
-        chmod u+x ./timedoctor-setup-1.5.0.20-linux-x86_64.run
-        ./timedoctor-setup-1.5.0.20-linux-x86_64.run
-        rm timedoctor-setup-1.5.0.20-linux-x86_64.run
+        installFromInstallerByUrl 'https://updates.timedoctor.com/download/_production/tdpro/linux/timedoctor-setup-1.5.0.20-linux-x86_64.run'
     else
         echo "Timedoctor already installed. Continue..."
     fi
@@ -222,6 +249,22 @@ installPhpMyAdmin() {
 
 installDocker() {
     if ! commandExists docker; then
+        aptInstall docker.io
+    else
+        echo "docker already installed. Continue..."
+    fi
+}
+
+installDockerCompose() {
+    if ! commandExists docker; then
+        aptInstall docker-compose
+    else
+        echo "docker-compose already installed. Continue..."
+    fi
+}
+
+installDockerFromRepo() {
+    if ! commandExists docker; then
         aptInstall apt-transport-https ca-certificates curl software-properties-common
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
@@ -233,7 +276,7 @@ installDocker() {
     fi
 }
 
-installDockerCompose() {
+installDockerComposeFromGithub() {
     if ! commandExists docker-compose; then
         # find the latest available docker-compose version number (e.g. 1.12.1)
         latest_version=$(curl https://api.github.com/repos/docker/compose/releases/latest | grep '"tag_name"' | grep -Po '\d+\.\d+\.\d+')
@@ -261,10 +304,16 @@ addCronJobsOnStartup() {
 
 installEarlyOom() {
     aptInstall earlyoom
+    cp "$DIR/earlyoom" /etc/default/earlyoom
+    systemctl restart earlyoom
 }
 
 installLibreOffice() {
     aptInstall libreoffice libreoffice-kde libreoffice-l10n-ru libreoffice-help-ru libreoffice-pdfimport hunspell-ru libreoffice-grammarcheck-ru
+}
+
+setDefaultBrowser() {
+    update-alternatives --config x-www-browser
 }
 
 stowDotFilesFromDropbox() {

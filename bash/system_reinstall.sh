@@ -2,6 +2,8 @@
 REAL_USER=`logname`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )" # script dir
 TEMP_DIR=`mktemp --directory`
+INSTALL_PATH='/usr/local/bin'
+UBUNTU_CODENAME=`lsb_release --codename --short`
 
 # https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 main() {
@@ -35,6 +37,9 @@ main() {
 
     installEarlyOom
     installLibreOffice
+
+    installWindows2Usb
+    installWine stable
 
     installPhpAndApache
     installVips
@@ -217,7 +222,6 @@ installVips() {
 
 installVirtHostManageScript() {
     # https://github.com/RoverWire/virtualhost
-    local INSTALL_PATH='/usr/local/bin'
     wget -O ${INSTALL_PATH}/virtualhost https://raw.githubusercontent.com/RoverWire/virtualhost/master/virtualhost.sh
     chmod +x ${INSTALL_PATH}/virtualhost
     wget -O ${INSTALL_PATH}/virtualhost-nginx https://raw.githubusercontent.com/RoverWire/virtualhost/master/virtualhost-nginx.sh
@@ -267,7 +271,7 @@ installDockerFromRepo() {
     if ! commandExists docker; then
         aptInstall apt-transport-https ca-certificates curl software-properties-common
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${UBUNTU_CODENAME} stable"
         apt update
         aptInstall docker-ce
         usermod -aG docker ${REAL_USER}
@@ -279,7 +283,7 @@ installDockerFromRepo() {
 installDockerComposeFromGithub() {
     if ! commandExists docker-compose; then
         # find the latest available docker-compose version number (e.g. 1.12.1)
-        latest_version=$(curl https://api.github.com/repos/docker/compose/releases/latest | grep '"tag_name"' | grep -Po '\d+\.\d+\.\d+')
+        latest_version=$(fetchLatestReleaseVersionNumberFromGithub https://github.com/docker/compose)
         output='/usr/local/bin/docker-compose'
         curl -L https://github.com/docker/compose/releases/download/${latest_version}/docker-compose-$(uname -s)-$(uname -m) -o ${output}
         chmod +x ${output}
@@ -287,6 +291,13 @@ installDockerComposeFromGithub() {
     else
         echo "docker-compose already installed. Continue..."
     fi
+}
+
+fetchLatestReleaseVersionNumberFromGithub() {
+    githubUrl=$1
+    repoName=$(echo "${githubUrl}" | grep -Po '\w+/\w+$')
+    # find the latest available docker-compose version number (e.g. 1.12.1)
+    curl -s https://api.github.com/repos/${repoName}/releases/latest | grep '"tag_name"' | grep -Po '\d+\.\d+\.\d+'
 }
 
 installDropbox() {
@@ -327,11 +338,23 @@ installFisher() {
 }
 
 installWine() {
+    # https://wiki.winehq.org/Ubuntu
+    local wineVersion=$1
+
     dpkg --add-architecture i386
     wget -nc https://dl.winehq.org/wine-builds/winehq.key
     apt-key add winehq.key
-    apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main'
-    apt install --install-recommends winehq-staging
+    apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${UBUNTU_CODENAME} main"
+    apt install --install-recommends winehq-${wineVersion}
+}
+
+installWindows2Usb() {
+    # https://github.com/ValdikSS/windows2usb
+    local latestVersion=$(fetchLatestReleaseVersionNumberFromGithub https://github.com/ValdikSS/windows2usb)
+    local installPath="${INSTALL_PATH}/windows2usb"
+    wget -O ${installPath} https://github.com/ValdikSS/windows2usb/releases/download/${latestVersion}/windows2usb-${latestVersion}-x86_64.AppImage
+    chown root:root ${installPath}
+    chmod +x ${installPath}
 }
 
 main

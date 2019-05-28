@@ -334,7 +334,8 @@ stowDotFilesFromDropbox() {
 
 installFisher() {
     curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
-    fisher add barnybug/docker-fish-completion
+    fish --command 'fisher add barnybug/docker-fish-completion'
+    fish --command 'fisher add laughedelic/pisces'
 }
 
 installWine() {
@@ -345,7 +346,7 @@ installWine() {
     wget -nc https://dl.winehq.org/wine-builds/winehq.key
     apt-key add winehq.key
     apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${UBUNTU_CODENAME} main"
-    apt install --install-recommends winehq-${wineVersion}
+    apt -y install --install-recommends winehq-${wineVersion}
 }
 
 installWindows2Usb() {

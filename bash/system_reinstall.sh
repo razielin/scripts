@@ -21,7 +21,7 @@ main() {
     aptInstall mpv
     aptInstall doublecmd-qt
     aptInstall vim curl
-    aptInstall xclip
+    aptInstall xclip xdotool
     aptInstall keepassxc
     aptInstall composer
     aptInstall nodejs

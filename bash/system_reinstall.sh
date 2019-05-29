@@ -20,7 +20,7 @@ main() {
     aptInstall git
     aptInstall mpv
     aptInstall doublecmd-qt
-    aptInstall vim curl
+    aptInstall vim curl unzip
     aptInstall xclip xdotool
     aptInstall keepassxc
     aptInstall composer
@@ -327,9 +327,9 @@ setDefaultBrowser() {
     update-alternatives --config x-www-browser
 }
 
-stowDotFilesFromDropbox() {
+stowDotFilesFromGoogleDrive() {
     aptInstall stow
-    stow -t ~ -d ~/Dropbox/dotfiles --verbose=3 bash doublecmd fish tmux yakuake
+    stow -t ~ -d ~/GoogleDrive/dotfiles --verbose=3 bash doublecmd fish tmux yakuake
 }
 
 installFisher() {
@@ -364,6 +364,31 @@ installGoogleDriveOcamlFuse() {
     aptInstall google-drive-ocamlfuse
     google-drive-ocamlfuse
     google-drive-ocamlfuse ~/GoogleDrive
+}
+
+installGrive2FromSelfCompiledDebPackage() {
+    # https://github.com/vitalif/grive2
+    mkdir grive_temp
+    cd grive_temp
+    unzip "$DIR/grive_0_5_1.zip"
+    dpkg -i grive_0.5.1+git20160731_amd64.deb
+    cd ..
+    rm -fr ./grive_temp
+
+    # auth and sync
+    if [[ ! -e ~/GoogleDrive ]]; then
+        mkdir ~/GoogleDrive
+    fi
+    cd ~/GoogleDrive
+    grive -a
+
+    # Scheduled syncs and syncs on file change events
+    aptInstall inotify-tools
+    # 'google-drive' is the name of your Google Drive folder in your $HOME directory
+    systemctl --user enable grive-timer@$(systemd-escape GoogleDrive).timer
+    systemctl --user start grive-timer@$(systemd-escape GoogleDrive).timer
+    systemctl --user enable grive-changes@$(systemd-escape GoogleDrive).service
+    systemctl --user start grive-changes@$(systemd-escape GoogleDrive).service
 }
 
 main

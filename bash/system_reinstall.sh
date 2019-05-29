@@ -358,4 +358,12 @@ installWindows2Usb() {
     chmod +x ${installPath}
 }
 
+installGoogleDriveOcamlFuse() {
+    add-apt-repository ppa:alessandro-strada/ppa
+    apt-get update
+    aptInstall google-drive-ocamlfuse
+    google-drive-ocamlfuse
+    google-drive-ocamlfuse ~/GoogleDrive
+}
+
 main

@@ -33,7 +33,7 @@ main() {
     installFisher
     installSkype
     installTimeDoctor
-    installDropbox
+    installGrive2FromSelfCompiledDebPackage
 
     installEarlyOom
     installLibreOffice

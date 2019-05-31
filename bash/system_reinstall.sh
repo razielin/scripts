@@ -371,7 +371,7 @@ installGrive2FromSelfCompiledDebPackage() {
     mkdir grive_temp
     cd grive_temp
     unzip "$DIR/grive_0_5_1.zip"
-    dpkg -i grive_0.5.1+git20160731_amd64.deb
+    debInstall grive_0.5.1+git20160731_amd64.deb
     cd ..
     rm -fr ./grive_temp
 

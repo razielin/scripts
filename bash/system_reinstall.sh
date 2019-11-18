@@ -38,8 +38,7 @@ main() {
     installEarlyOom
     installLibreOffice
 
-    installWindows2Usb
-    installWine stable
+    installBoilr
 
     installPhpAndApache
     installVips
@@ -400,5 +399,16 @@ installAndConfigureWindowsShare() {
     crontab -e
     # @hourly bash -c 'rsync -avh /media/sharedphoto/ ~/Фото && notify-send "фото sync OK" || notify-send "фото sync FAILED!"'
 }
+
+installBoilr() {
+    #  todo replace with the alive fork: https://github.com/Ilyes512/boilr
+    local version=$(fetchLatestReleaseVersionNumberFromGithub "https://github.com/tmrts/boilr")
+    wget "https://github.com/tmrts/boilr/releases/download/${version}/boilr-${version}-linux_amd64.tgz" -O boilr.tgz
+    tar zxvf boilr.tgz
+    mv boilr "${INSTALL_PATH}/boilr"
+    chown root:root "${INSTALL_PATH}/boilr"
+    chmod +x "${INSTALL_PATH}/boilr"
+}
+
 
 main

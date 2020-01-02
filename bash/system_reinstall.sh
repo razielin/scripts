@@ -394,7 +394,7 @@ installAndConfigureWindowsShare() {
     aptInstall cifs-utils
     mkdir /media/sharedphoto
     vim /etc/fstab
-    # //192.168.1.15/Фотки /media/sharedphoto cifs _netdev, username=guest,password=,uid=1000,iocharset=utf8  0  0
+    # //192.168.1.15/Фотки /media/sharedphoto cifs _netdev,username=guest,password=,uid=1000,iocharset=utf8  0  0
     rsync -avh --dry-run /media/sharedphoto/ ~/Фото # remove --dry-run to actually sync files
     crontab -e
     # @hourly bash -c 'rsync -avh /media/sharedphoto/ ~/Фото && notify-send "фото sync OK" || notify-send "фото sync FAILED!"'

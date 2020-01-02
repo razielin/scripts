@@ -27,6 +27,7 @@ main() {
     aptInstall nodejs
     aptInstall qalculate
     aptInstall crudini
+    aptInstall run-one
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
@@ -397,7 +398,7 @@ installAndConfigureWindowsShare() {
     # //192.168.1.15/Фотки /media/sharedphoto cifs _netdev,username=guest,password=,uid=1000,iocharset=utf8  0  0
     rsync -avh --dry-run /media/sharedphoto/ ~/Фото # remove --dry-run to actually sync files
     crontab -e
-    # @hourly bash -c 'rsync -avh /media/sharedphoto/ ~/Фото && notify-send "фото sync OK" || notify-send "фото sync FAILED!"'
+    # @hourly bash -c 'run-one rsync -avh /media/sharedphoto/ ~/Фото &> ~/PHOTO_SYNC.log'
 }
 
 installBoilr() {

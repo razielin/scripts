@@ -22,6 +22,7 @@ main() {
     addCronJobsOnStartup
 
     configureAutoupgrade
+    configurePrinter
     setDefaultBrowser
 }
 
@@ -131,6 +132,12 @@ installEarlyOom() {
     aptInstall earlyoom
     cp "$DIR/earlyoom" /etc/default/earlyoom
     systemctl restart earlyoom
+}
+
+configurePrinter() {
+    service cups stop
+    cp "$DIR/printers.conf" /etc/cups/printers.conf
+    servie cups start
 }
 
 installLibreOffice() {

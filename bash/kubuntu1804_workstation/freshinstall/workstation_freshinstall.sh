@@ -137,7 +137,7 @@ installEarlyOom() {
 configurePrinter() {
     service cups stop
     cp "$DIR/printers.conf" /etc/cups/printers.conf
-    servie cups start
+    service cups start
 }
 
 installLibreOffice() {

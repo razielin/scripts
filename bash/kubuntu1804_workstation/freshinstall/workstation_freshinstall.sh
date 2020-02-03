@@ -144,4 +144,8 @@ installLibreOffice() {
     aptInstall libreoffice libreoffice-kde libreoffice-l10n-ru libreoffice-help-ru libreoffice-pdfimport hunspell-ru libreoffice-grammarcheck-ru
 }
 
+configureKeyboardLayoutSwitching() {
+    localectl --no-convert set-x11-keymap us,ru pc105 , grp:alt_shift_toggle,grp_led:scroll
+}
+
 main

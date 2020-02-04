@@ -23,6 +23,7 @@ main() {
 
     configureAutoupgrade
     configurePrinter
+    configureKeyboardLayoutSwitching
     setDefaultBrowser
 }
 
@@ -145,7 +146,8 @@ installLibreOffice() {
 }
 
 configureKeyboardLayoutSwitching() {
-    localectl --no-convert set-x11-keymap us,ru pc105 , grp:alt_shift_toggle,grp_led:scroll
+    mkdir -p /etc/X11/xorg.conf.d
+    cp "$DIR/00-keyboard.conf" /etc/X11/xorg.conf.d/00-keyboard.conf
 }
 
 main

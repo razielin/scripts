@@ -147,6 +147,7 @@ installLibreOffice() {
 
 configureKeyboardLayoutSwitching() {
     mkdir -p /etc/X11/xorg.conf.d
+    cp "$DIR/kxkbrc" ~/.config/kxkbrc
     cp "$DIR/00-keyboard.conf" /etc/X11/xorg.conf.d/00-keyboard.conf
 }
 

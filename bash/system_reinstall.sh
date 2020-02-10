@@ -167,11 +167,19 @@ makeBackupIfNotExists() {
 }
 
 installPhpAndApache() {
-    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug
+    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-enum php-json php-bz2 php-curl
     makeBackupIfNotExists /etc/apache2/apache2.conf
     cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
     a2dissite 000-default > /dev/null
     a2enmod rewrite
+}
+
+installPhpFromRepo() {
+    apt -y install software-properties-common
+    add-apt-repository ppa:ondrej/php
+    apt -y install php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-enum php-json php-bz2 php-curl
+    # php-pear includes pecl and php7.0-dev contains libs for compiling some of PHP C extensions
+    apt -y install php-dev php-pear
 }
 
 configurePHPIni() {

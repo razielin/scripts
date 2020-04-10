@@ -419,5 +419,12 @@ installBoilr() {
     chmod +x "${INSTALL_PATH}/boilr"
 }
 
+installHamachi() {
+    # https://www.haguichi.net/ - GUI for Hamachi
+    add-apt-repository -y ppa:webupd8team/haguichi
+    apt update
+    aptInstall haguichi
+    debInstallByUrl 'https://www.vpn.net/installers/logmein-hamachi_2.1.0.203-1_amd64.deb'
+}
 
 main

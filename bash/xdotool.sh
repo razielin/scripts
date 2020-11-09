@@ -1,25 +1,35 @@
 #!/usr/bin/env bash
 
 main() {
-    while [[ 1 ]]; do
-        repeatCommand 2 clickToBottomPanel
+    while true; do
+        repeatCommand 2 clickToStartMenu
         altTab
-        sleep 4
-        if (( `randomIntBetween 0 10` > 3 )); then
+        if (( $(randomIntBetween 0 3) > 1 )); then
+            pageDown
+        else
+            pageUp
+        fi
+
+        sleep "$(randomIntBetween 3 6)"
+        if (( $(randomIntBetween 0 10) > 4 )); then
             prevTab
         else
             nextTab
         fi
+
+        sleep "$(randomIntBetween 1 5)"
+        if (( $(randomIntBetween 0 3) > 1 )); then
+            pageDown
+        else
+            pageUp
+        fi
+
+        clickOnEmptySpaceOfBottomPanel "$(randomIntBetween 2 12)"
     done
 }
 
 nextTab() {
-    if [[ `focusedWindowName` == "Chromium" ]]; then
-        ctrlTab
-    fi
-    if [[ `focusedWindowName` == "PhpStorm" ]]; then
-        altRight
-    fi
+    ctrlTab
 }
 
 prevTab() {
@@ -54,39 +64,55 @@ repeatCommand() {
     done
 }
 
-clickToBottomPanel() {
+clickToStartMenu() {
     xdotool mousemove 15 1065 click 1
 }
 
+clickOnEmptySpaceOfBottomPanel() {
+    times=$1
+    xdotool mousemove 900 1065 click 1
+    for (( c=0; c<times; c++ )); do
+        eval "$(xdotool getmouselocation --shell)"
+        if [[ $X == 900 ]];then
+            xdotool click 1
+        fi
+        sleep 1
+    done
+}
+
 altRight() {
-    xdotool keydown alt key Right
+    xdotool key alt+Right
     sleep 1
-    xdotool keyup alt
 }
 
 altLeft() {
-    xdotool keydown alt key Left
+    xdotool key alt+Left
     sleep 1
-    xdotool keyup alt
 }
 
 ctrlTab() {
-    xdotool keydown ctrl key Tab
+    xdotool key ctrl+Tab
     sleep 1
-    xdotool keyup ctrl
 }
 
 ctrlShiftTab() {
-    xdotool keydown ctrl keydown shift key Tab
+    xdotool key ctrl+shift+Tab
     sleep 1
-    xdotool keyup ctrl
-    xdotool keyup shift
 }
 
 altTab() {
-    xdotool keydown alt key Tab
+    xdotool key alt+Tab
     sleep 1
-    xdotool keyup alt
+}
+
+pageUp() {
+    xdotool key Page_Up
+    sleep 1
+}
+
+pageDown() {
+    xdotool key Page_Down
+    sleep 1
 }
 
 main

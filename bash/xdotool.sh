@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 main() {
+    sleep 3
     while true; do
         repeatCommand 2 clickToStartMenu
         altTab
@@ -24,7 +25,7 @@ main() {
             pageUp
         fi
 
-        clickOnEmptySpaceOfBottomPanel "$(randomIntBetween 2 12)"
+        clickOnEmptySpaceOfBottomPanel "$(randomIntBetween 2 20)"
     done
 }
 
@@ -73,7 +74,8 @@ clickOnEmptySpaceOfBottomPanel() {
     xdotool mousemove 900 1065 click 1
     for (( c=0; c<times; c++ )); do
         eval "$(xdotool getmouselocation --shell)"
-        if [[ $X == 900 ]];then
+        # if mouse cursor has been moved - stop clicking
+        if [[ $X -eq 900 ]];then
             xdotool click 1
         fi
         sleep 1

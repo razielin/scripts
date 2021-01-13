@@ -236,11 +236,28 @@ installVirtHostManageScript() {
     chmod +x ${INSTALL_PATH}/virtualhost-nginx
 }
 
+DB_ADMIN_USER='raziel'
+DB_ADMIN_PASS='556691'
 installMariadb() {
-    DB_ADMIN_USER='raziel'
-    DB_ADMIN_PASS='556691'
-
     if ! commandExists mariadb; then
+        aptInstall mariadb-server mariadb-client
+        mysql_secure_installation
+        echo "
+        CREATE USER '$DB_ADMIN_USER'@'localhost' IDENTIFIED BY '$DB_ADMIN_PASS';
+        GRANT ALL PRIVILEGES ON * . * TO '$DB_ADMIN_USER'@'localhost';
+        FLUSH PRIVILEGES;
+        " | mysql -u root
+    else
+        echo "mariadb already installed. Continue..."
+    fi
+}
+
+installMariadbFromRepo() {
+   MARIADB_VERSION=${1:-10.4}
+   if ! commandExists mariadb; then
+        aptInstall software-properties-common
+        apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+        add-apt-repository "deb [arch=amd64,arm64,ppc64el] https://mariadb.mirror.pcextreme.nl/repo/$MARIADB_VERSION/ubuntu focal main"
         aptInstall mariadb-server mariadb-client
         mysql_secure_installation
         echo "
@@ -425,6 +442,18 @@ installHamachi() {
     apt update
     aptInstall haguichi
     debInstallByUrl 'https://www.vpn.net/installers/logmein-hamachi_2.1.0.203-1_amd64.deb'
+}
+
+installTelegram() {
+    if ! commandExists telegram-desktop; then
+        aptInstall telegram-desktop
+    else
+        echo "docker already installed. Continue..."
+    fi
+}
+
+installRedshift() {
+    aptInstall redshift plasma-applet-redshift-control
 }
 
 main

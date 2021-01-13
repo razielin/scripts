@@ -5,7 +5,6 @@ TEMP_DIR=`mktemp --directory`
 INSTALL_PATH='/usr/local/bin'
 UBUNTU_CODENAME=`lsb_release --codename --short`
 
-# https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
 main() {
     printFunctionNameBeforeExecution
     cd ${TEMP_DIR}
@@ -55,6 +54,7 @@ main() {
     installPhpMyAdmin
 
     configurePHPIni
+    configureInotifyWatchesLimit
     #addCronJobsOnStartup
 
     installDocker
@@ -469,6 +469,12 @@ installTelegram() {
 
 installRedshift() {
     aptInstall redshift plasma-applet-redshift-control
+}
+
+configureInotifyWatchesLimit() {
+    # https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
+    bash -c 'echo "fs.inotify.max_user_watches = 524288" > /etc/sysctl.d/99-max_user_watches.conf'
+    sysctl -p --system
 }
 
 main

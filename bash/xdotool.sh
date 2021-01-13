@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#print every command before executing
+#set -x
 
 main() {
     sleep 3
@@ -62,6 +64,7 @@ repeatCommand() {
     for (( c=0; c<${times}; c++ ))
     do
        ${command}
+       sleep 1
     done
 }
 

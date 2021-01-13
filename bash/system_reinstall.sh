@@ -44,6 +44,7 @@ main() {
     installTelegram
     installRedshift
     installBoilr
+    installYoutubeDl
 
     installPhpAndApache
     installVips
@@ -481,6 +482,14 @@ installNodejsFromRepo() {
     NODE_VERSION=${1:-14}
     curl -sL https://deb.nodesource.com/setup_"$NODE_VERSION".x | sudo -E bash -
     aptInstall nodejs
+}
+
+installYoutubeDl() {
+    if ! commandExists python; then
+        ln -s /usr/bin/python3 /usr/bin/python
+    fi
+    curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+    chmod a+rx /usr/local/bin/youtube-dl
 }
 
 main

@@ -13,45 +13,53 @@ main() {
 
     checkRootPerm
     dieOnError
+    
+    apt update
+    apt upgrade -y
+    apt autoremove -y
 
     aptInstall chromium-browser
     aptInstall fish
     aptInstall yakuake
     aptInstall git
     aptInstall mpv
-    aptInstall doublecmd-qt
+    aptInstall doublecmd-qt libffmpegthumbnailer4v5 libunrar5
     aptInstall vim curl unzip
     aptInstall xclip xdotool
     aptInstall keepassxc
     aptInstall composer
     aptInstall nodejs
-    aptInstall qalculate
+    aptInstall qalculate speedcrunch
     aptInstall crudini
     aptInstall run-one
+    installTelegram
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
-    installFisher
     installSkype
-    installTimeDoctor
-    installGrive2FromSelfCompiledDebPackage
+    #installTimeDoctor
+    #installGrive2FromSelfCompiledDebPackage
 
     installEarlyOom
     installLibreOffice
+    installPHPStorm
 
+    installTelegram
+    installRedshift
     installBoilr
 
     installPhpAndApache
     installVips
     installVirtHostManageScript
-    installMariadb
+    installMariadbFromRepo '10.5'
     installPhpMyAdmin
 
     configurePHPIni
-    addCronJobsOnStartup
+    #addCronJobsOnStartup
 
     installDocker
     installDockerCompose
+    installFisher
 
     service apache2 restart
     service mariadb restart
@@ -108,7 +116,7 @@ setIniVar() {
 }
 
 aptInstall() {
-    apt-get install -y ${@}
+    apt-get install -y "${@}"
 }
 
 debInstallByUrl() {
@@ -154,7 +162,7 @@ installTimeDoctor() {
 }
 
 installPHPStorm() {
-    snap install phpstorm --channel=2018.3/edge --classic
+    snap install phpstorm --channel=stable --classic
 }
 
 makeBackupIfNotExists() {
@@ -167,7 +175,7 @@ makeBackupIfNotExists() {
 }
 
 installPhpAndApache() {
-    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-enum php-json php-bz2 php-curl
+    aptInstall php php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-json php-bz2 php-curl
     makeBackupIfNotExists /etc/apache2/apache2.conf
     cp ${DIR}/apache2.conf /etc/apache2/apache2.conf
     a2dissite 000-default > /dev/null
@@ -177,7 +185,7 @@ installPhpAndApache() {
 installPhpFromRepo() {
     apt -y install software-properties-common
     add-apt-repository ppa:ondrej/php
-    apt -y install php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-enum php-json php-bz2 php-curl
+    apt -y install php-mysql php-gd php-imagick php-curl php-xml php-mbstring php-zip php-xdebug php-intl php-json php-bz2 php-curl
     # php-pear includes pecl and php7.0-dev contains libs for compiling some of PHP C extensions
     apt -y install php-dev php-pear
 }
@@ -210,6 +218,7 @@ peclExtensionInstalled() {
 }
 
 installVips() {
+    PHP_VERSION=$(php -r "echo PHP_VERSION;" | cut -c 1,2,3) # php version, like 5.6
     if ! peclExtensionInstalled vips; then
         # php-dev conflicts with Timedoctor, because Timedoctor requires libssl1.0-dev but php-dev requires libssl-dev
         # so during installation of php-dev - libssl1.0-dev will be removed and timedoctor will not sync
@@ -217,7 +226,7 @@ installVips() {
         aptInstall libvips-dev
         # confirm prompt 'enable vips [yes] :'
         printf "\n" | pecl install vips
-        for php_ini in /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/php.ini; do
+        for php_ini in /etc/php/${PHP_VERSION}/apache2/php.ini /etc/php/${PHP_VERSION}/cli/php.ini; do
             makeBackupIfNotExists ${php_ini}
             crudini --set ${php_ini} PHP extension vips.so
         done
@@ -225,7 +234,7 @@ installVips() {
         echo "vips already installed. Continue..."
     fi
     # reinstall libssl1.0-dev to fix Timedoctor
-    aptInstall libssl1.0-dev
+#    aptInstall libssl1.0-dev
 }
 
 installVirtHostManageScript() {
@@ -271,7 +280,7 @@ installMariadbFromRepo() {
 }
 
 installPhpMyAdmin() {
-    aptInstall phpmyadmin php-mbstring php-gettext
+    aptInstall phpmyadmin php-mbstring
     phpenmod mbstring
     service apache2 restart
 }
@@ -282,10 +291,12 @@ installDocker() {
     else
         echo "docker already installed. Continue..."
     fi
+    usermod -aG docker ${REAL_USER}
+    systemctl enable docker
 }
 
 installDockerCompose() {
-    if ! commandExists docker; then
+    if ! commandExists docker-compose; then
         aptInstall docker-compose
     else
         echo "docker-compose already installed. Continue..."
@@ -427,13 +438,17 @@ installAndConfigureWindowsShare() {
 }
 
 installBoilr() {
-    #  todo replace with the alive fork: https://github.com/Ilyes512/boilr
-    local version=$(fetchLatestReleaseVersionNumberFromGithub "https://github.com/tmrts/boilr")
-    wget "https://github.com/tmrts/boilr/releases/download/${version}/boilr-${version}-linux_amd64.tgz" -O boilr.tgz
-    tar zxvf boilr.tgz
-    mv boilr "${INSTALL_PATH}/boilr"
-    chown root:root "${INSTALL_PATH}/boilr"
-    chmod +x "${INSTALL_PATH}/boilr"
+    if ! commandExists boilr; then
+      #  todo replace with the alive fork: https://github.com/Ilyes512/boilr
+      local version=$(fetchLatestReleaseVersionNumberFromGithub "https://github.com/tmrts/boilr")
+      wget "https://github.com/tmrts/boilr/releases/download/${version}/boilr-${version}-linux_amd64.tgz" -O boilr.tgz
+      tar zxvf boilr.tgz
+      mv boilr "${INSTALL_PATH}/boilr"
+      chown root:root "${INSTALL_PATH}/boilr"
+      chmod +x "${INSTALL_PATH}/boilr"
+    else
+        echo "docker already installed. Continue..."
+    fi
 }
 
 installHamachi() {

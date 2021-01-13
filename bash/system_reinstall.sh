@@ -27,11 +27,9 @@ main() {
     aptInstall xclip xdotool
     aptInstall keepassxc
     aptInstall composer
-    aptInstall nodejs
     aptInstall qalculate speedcrunch
     aptInstall crudini
     aptInstall run-one
-    installTelegram
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
@@ -52,6 +50,8 @@ main() {
     installVirtHostManageScript
     installMariadbFromRepo '10.5'
     installPhpMyAdmin
+
+    installNodejsFromRepo '14'
 
     configurePHPIni
     configureInotifyWatchesLimit
@@ -74,7 +74,7 @@ signalHandling() {
 
 cleaningOnExit() {
     rm -fr ${TEMP_DIR}
-    rmdir ${TEMP_DIR}
+#    rmdir ${TEMP_DIR}
     cd ${OLDPWD}
 }
 
@@ -475,6 +475,12 @@ configureInotifyWatchesLimit() {
     # https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
     bash -c 'echo "fs.inotify.max_user_watches = 524288" > /etc/sysctl.d/99-max_user_watches.conf'
     sysctl -p --system
+}
+
+installNodejsFromRepo() {
+    NODE_VERSION=${1:-14}
+    curl -sL https://deb.nodesource.com/setup_"$NODE_VERSION".x | sudo -E bash -
+    aptInstall nodejs
 }
 
 main

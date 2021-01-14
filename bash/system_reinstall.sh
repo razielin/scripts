@@ -30,6 +30,7 @@ main() {
     aptInstall qalculate speedcrunch
     aptInstall crudini
     aptInstall run-one
+    aptInstall meld
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 

@@ -38,6 +38,7 @@ main() {
     installSkype
     #installTimeDoctor
     #installGrive2FromSelfCompiledDebPackage
+    installVGrive
 
     installEarlyOom
     installLibreOffice
@@ -497,6 +498,11 @@ installYoutubeDl() {
     fi
     curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
     chmod a+rx /usr/local/bin/youtube-dl
+}
+
+installVGrive() {
+    # https://github.com/bcedu/VGrive/
+    debInstallByUrl 'https://github.com/bcedu/VGrive/releases/download/1.6.0/com.github.bcedu.vgrive_1.6.0_amd64.deb'
 }
 
 main

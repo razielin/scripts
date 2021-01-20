@@ -54,6 +54,7 @@ main() {
     installPhpMyAdmin
 
     installNodejsFromRepo '14'
+    installVueJs
 
     configurePHPIni
     configureInotifyWatchesLimit
@@ -483,6 +484,10 @@ installNodejsFromRepo() {
     NODE_VERSION=${1:-14}
     curl -sL https://deb.nodesource.com/setup_"$NODE_VERSION".x | sudo -E bash -
     aptInstall nodejs
+}
+
+installVueJs() {
+    npm install -g @vue/cli
 }
 
 installYoutubeDl() {

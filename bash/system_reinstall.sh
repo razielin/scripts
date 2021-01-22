@@ -37,7 +37,7 @@ main() {
 
     installSkype
     #installTimeDoctor
-    #installGrive2FromSelfCompiledDebPackage
+    installGrive2FromRepo
     installVGrive
 
     installEarlyOom
@@ -422,6 +422,32 @@ installGrive2FromSelfCompiledDebPackage() {
     fi
     cd ~/GoogleDrive
     grive -a
+
+    # Scheduled syncs and syncs on file change events
+    aptInstall inotify-tools
+    # 'google-drive' is the name of your Google Drive folder in your $HOME directory
+    systemctl --user enable grive-timer@$(systemd-escape GoogleDrive).timer
+    systemctl --user start grive-timer@$(systemd-escape GoogleDrive).timer
+    systemctl --user enable grive-changes@$(systemd-escape GoogleDrive).service
+    systemctl --user start grive-changes@$(systemd-escape GoogleDrive).service
+}
+
+installGrive2FromRepo() {
+    # https://github.com/vitalif/grive2
+    add-apt-repository --yes ppa:nilarimogard/webupd8
+    aptInstall grive
+
+    # auth and sync
+    if [[ ! -e ~/GoogleDrive ]]; then
+        mkdir ~/GoogleDrive
+    fi
+    cd ~/GoogleDrive
+
+    read -p "client_id: " client_id
+    echo
+    read -p "client_secret: " client_secret
+    echo
+    grive -a --id "$client_id" --secret "$client_secret"
 
     # Scheduled syncs and syncs on file change events
     aptInstall inotify-tools

@@ -60,6 +60,7 @@ main() {
 
     configurePHPIni
     configureInotifyWatchesLimit
+    configureSwappiness
     #addCronJobsOnStartup
 
     installDocker
@@ -505,6 +506,12 @@ installRedshift() {
 configureInotifyWatchesLimit() {
     # https://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
     bash -c 'echo "fs.inotify.max_user_watches = 524288" > /etc/sysctl.d/99-max_user_watches.conf'
+    sysctl -p --system
+}
+
+configureSwappiness() {
+    # https://askubuntu.com/questions/157793/why-is-swap-being-used-even-though-i-have-plenty-of-free-ram
+    bash -c 'echo "vm.swappiness=10" > /etc/sysctl.d/99-swappiness.conf'
     sysctl -p --system
 }
 

@@ -35,6 +35,7 @@ main() {
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
+    installSayonara
     installSkype
     #installTimeDoctor
     installGrive2FromRepo
@@ -536,6 +537,13 @@ installYoutubeDl() {
 installVGrive() {
     # https://github.com/bcedu/VGrive/
     debInstallByUrl 'https://github.com/bcedu/VGrive/releases/download/1.6.0/com.github.bcedu.vgrive_1.6.0_amd64.deb'
+}
+
+installSayonara() {
+#    add-apt-repository -y ppa:lucioc/sayonara
+    add-apt-repository -y ppa:lucioc/sayonara-experimental
+    apt update
+    aptInstall sayonara
 }
 
 main

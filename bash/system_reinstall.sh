@@ -32,6 +32,7 @@ main() {
     aptInstall run-one
     aptInstall meld
     aptInstall qbittorrent
+    aptInstall libnotify-bin # notify-send
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 

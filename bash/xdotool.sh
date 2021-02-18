@@ -3,8 +3,16 @@
 #set -x
 
 main() {
-    sleep 3
+    if [[ -n $1 ]]; then
+        stopTime=$(( $(curUnixTime) + "$1" ))
+        echo $stopTime
+    fi
+
+    sleep 5
     while true; do
+        if [[ -n $stopTime ]] && (( $(curUnixTime) > stopTime )); then
+            exit
+        fi
         repeatCommand 2 clickToStartMenu
         altTab
         if (( $(randomIntBetween 0 3) > 1 )); then
@@ -120,4 +128,8 @@ pageDown() {
     sleep 1
 }
 
-main
+curUnixTime() {
+    date +%s
+}
+
+main "$@"

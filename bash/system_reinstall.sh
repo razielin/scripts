@@ -547,4 +547,11 @@ installSayonara() {
     aptInstall sayonara
 }
 
+configurePhotosSync() {
+    aptInstall cifs-utils
+    if ! grep '/media/sharedphoto' /etc/fstab ; then
+        echo '//192.168.0.101/Фотки /media/sharedphotos cifs username=guest,password=,iocharset=utf8,_netdev,x-systemd.automount 0 0' >> /etc/fstab
+    fi
+}
+
 main

@@ -17,7 +17,7 @@ main() {
     apt upgrade -y
     apt autoremove -y
 
-    aptInstall chromium-browser
+    installChromeFromRepo
     aptInstall fish
     aptInstall yakuake
     aptInstall git
@@ -552,6 +552,13 @@ configurePhotosSync() {
     if ! grep '/media/sharedphoto' /etc/fstab ; then
         echo '//192.168.0.101/Фотки /media/sharedphotos cifs username=guest,password=,iocharset=utf8,_netdev,x-systemd.automount 0 0' >> /etc/fstab
     fi
+}
+
+installChromeFromRepo() {
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+    sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    sudo apt-get update
+    aptInstall google-chrome-stable
 }
 
 main

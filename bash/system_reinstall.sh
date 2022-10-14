@@ -495,7 +495,7 @@ installHamachi() {
 
 installTelegram() {
     if ! commandExists telegram-desktop; then
-        aptInstall telegram-desktop
+        snap install telegram-desktop
     else
         echo "docker already installed. Continue..."
     fi

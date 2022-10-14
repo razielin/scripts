@@ -36,11 +36,11 @@ main() {
 
     sudo usermod -s /usr/bin/fish ${REAL_USER}
 
-    installSayonara
+#    installSayonara
     installSkype
     #installTimeDoctor
-    installGrive2FromRepo
-    installVGrive
+    installGoogleDriveOcamlFuse
+#    installVGrive
 
     installEarlyOom
     installLibreOffice
@@ -407,6 +407,7 @@ installGoogleDriveOcamlFuse() {
     apt-get update
     aptInstall google-drive-ocamlfuse
     google-drive-ocamlfuse
+    mkdir ~/GoogleDrive
     google-drive-ocamlfuse ~/GoogleDrive
 }
 
